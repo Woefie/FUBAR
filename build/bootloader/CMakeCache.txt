@@ -236,7 +236,7 @@ IDF_TARGET:STRING=esp32
 LEGACY_INCLUDE_COMMON_HEADERS:UNINITIALIZED=
 
 //No help, variable specified on the command line.
-PYTHON:UNINITIALIZED=python
+PYTHON:UNINITIALIZED=/home/narv/.espressif/python_env/idf4.1_py2.7_env/bin/python
 
 //No help, variable specified on the command line.
 PYTHON_DEPS_CHECKED:UNINITIALIZED=1
@@ -245,28 +245,22 @@ PYTHON_DEPS_CHECKED:UNINITIALIZED=1
 SDKCONFIG:UNINITIALIZED=/home/narv/Project/Windwagen/code/sdkconfig
 
 //Dependencies for the target
-__idf_bootloader_support_LIB_DEPENDS:STATIC=general;__idf_log;general;__idf_xtensa;
+__idf_bootloader_support_LIB_DEPENDS:STATIC=general;__idf_log;
 
 //Dependencies for the target
-__idf_efuse_LIB_DEPENDS:STATIC=general;__idf_log;general;__idf_xtensa;
+__idf_efuse_LIB_DEPENDS:STATIC=general;__idf_log;
 
 //Dependencies for the target
-__idf_log_LIB_DEPENDS:STATIC=general;__idf_xtensa;
+__idf_main_LIB_DEPENDS:STATIC=general;__idf_log;
 
 //Dependencies for the target
-__idf_main_LIB_DEPENDS:STATIC=general;__idf_log;general;__idf_xtensa;
-
-//Dependencies for the target
-__idf_micro-ecc_LIB_DEPENDS:STATIC=general;__idf_log;general;__idf_xtensa;
+__idf_micro-ecc_LIB_DEPENDS:STATIC=general;__idf_log;
 
 //Dependencies for the target
 __idf_soc_LIB_DEPENDS:STATIC=general;__idf_log;general;__idf_esp_rom;general;__idf_esp_common;general;__idf_xtensa;
 
 //Dependencies for the target
-__idf_spi_flash_LIB_DEPENDS:STATIC=general;__idf_log;general;__idf_xtensa;
-
-//Dependencies for the target
-__idf_xtensa_LIB_DEPENDS:STATIC=general;__idf_log;general;__idf_esp_rom;general;__idf_esp_common;general;/home/narv/Programs/ESP-IDF/esp-idf/components/xtensa/esp32/libhal.a;
+__idf_spi_flash_LIB_DEPENDS:STATIC=general;__idf_log;
 
 //Value Computed by CMake
 bootloader_BINARY_DIR:STATIC=/home/narv/Project/Windwagen/code/build/bootloader

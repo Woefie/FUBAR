@@ -3,15 +3,16 @@
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/size-components.dir
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/size.dir
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/_project_elf_src.dir
-/home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/mconf-idf.dir
+/home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/bootloader.elf.dir
+/home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/flash.dir
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/app-flash.dir
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/confserver.dir
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/menuconfig.dir
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/gen_project_binary.dir
+/home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/erase_flash.dir
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/size-files.dir
 /home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/app.dir
-/home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/bootloader.elf.dir
-/home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/flash.dir
+/home/narv/Project/Windwagen/code/build/bootloader/CMakeFiles/monitor.dir
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/CMakeFiles/rebuild_cache.dir
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/CMakeFiles/edit_cache.dir
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/esp32/CMakeFiles/rebuild_cache.dir
@@ -20,7 +21,6 @@
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/soc/CMakeFiles/__idf_soc.dir
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/soc/CMakeFiles/edit_cache.dir
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/xtensa/CMakeFiles/rebuild_cache.dir
-/home/narv/Project/Windwagen/code/build/bootloader/esp-idf/xtensa/CMakeFiles/__idf_xtensa.dir
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/xtensa/CMakeFiles/edit_cache.dir
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/esp_common/CMakeFiles/rebuild_cache.dir
 /home/narv/Project/Windwagen/code/build/bootloader/esp-idf/esp_common/CMakeFiles/edit_cache.dir

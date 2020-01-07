@@ -6,9 +6,11 @@
     "config_defaults":    "",
     "app_elf":            "bootloader.elf",
     "app_bin":            "bootloader.bin",
-    "git_revision":       "v4.1-dev-369-g4dac7c7df",
+    "git_revision":       "v4.1-dev-1757-g826b9f638",
+    "target":             "esp32",
     "phy_data_partition": "",
-    "monitor_baud" : "115200",
+    "monitor_baud" :      "115200",
+    "monitor_toolprefix": "xtensa-esp32-elf-",
     "config_environment" : {
         "COMPONENT_KCONFIGS" : "/home/narv/Programs/ESP-IDF/esp-idf/components/efuse/Kconfig;/home/narv/Programs/ESP-IDF/esp-idf/components/esp32/Kconfig;/home/narv/Programs/ESP-IDF/esp-idf/components/esp_common/Kconfig;/home/narv/Programs/ESP-IDF/esp-idf/components/log/Kconfig;/home/narv/Programs/ESP-IDF/esp-idf/components/spi_flash/Kconfig",
         "COMPONENT_KCONFIGS_PROJBUILD" : "/home/narv/Programs/ESP-IDF/esp-idf/components/bootloader/Kconfig.projbuild;/home/narv/Programs/ESP-IDF/esp-idf/components/esptool_py/Kconfig.projbuild;/home/narv/Programs/ESP-IDF/esp-idf/components/partition_table/Kconfig.projbuild"

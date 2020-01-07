@@ -1,0 +1,5 @@
+source "/home/narv/Programs/ESP-IDF/esp-idf/components/app_update/Kconfig.projbuild"
+source "/home/narv/Programs/ESP-IDF/esp-idf/components/bootloader/Kconfig.projbuild"
+source "/home/narv/Programs/ESP-IDF/esp-idf/components/esptool_py/Kconfig.projbuild"
+source "/home/narv/Programs/ESP-IDF/esp-idf/components/partition_table/Kconfig.projbuild"
+source "/home/narv/Project/Windwagen/code/main/Kconfig.projbuild"
