@@ -7,16 +7,26 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 #include <stdio.h>
+#include <driver/adc.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_system.h"
 #include "esp_spi_flash.h"
 
-extern "C" {
+int potValue = 0;
+
+extern "C"
+{
     void app_main(void);
 }
 
 void app_main(void)
 {
-    printf("This is the start template for this project!\n");
+    while(1) {
+	    uint8_t myChar;
+		STATUS s = uart_rx_one_char(&myChar);
+		if (s == OK) {
+		    printf("%c\n", myChar);
+		}
+	 }
 }
