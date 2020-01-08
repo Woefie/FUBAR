@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "dirsensor.h": "c",
+        "random": "c"
+    }
+}
