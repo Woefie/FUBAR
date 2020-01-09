@@ -20,7 +20,6 @@
 #include "Sensors/sensors.h"
 
 /* Initialisation of direction queue. Queue is used as massage parser */
-QueueHandle_t dirQueue;
 
 void setup();
 
@@ -34,22 +33,38 @@ void setup()
     }
     xTaskCreate(
         dirController, /*Task function */
-        "WDCT", /* Name of task. */
-        10000, /* Stack size of task */
-        NULL, /* paramter of the task */
-        1, /* priority of the task */
-        NULL /* Task handle to keep track of created task */
+        "WDCT",        /* Name of task. */
+        10000,         /* Stack size of task */
+        NULL,          /* paramter of the task */
+        1,             /* priority of the task */
+        NULL           /* Task handle to keep track of created task */
+    );
+
+    speedQueue = xQueueCreate(1, sizeof(Data));
+    if (speedQueue == NULL)
+    {
+        printf("Error creating the queue!\n");
+    }
+    xTaskCreate(
+        speedController, /*Task function */
+        "WDCT",          /* Name of task. */
+        10000,           /* Stack size of task */
+        NULL,            /* paramter of the task */
+        1,               /* priority of the task */
+        NULL             /* Task handle to keep track of created task */
     );
 }
 
 void app_main(void)
 {
     setup();
-    Data data;
+    Data data, data2;
     for (;;)
     {
         vTaskDelay(100);
         xQueueReceive(dirQueue, &data, portMAX_DELAY);
+        xQueueReceive(speedQueue, &data2, portMAX_DELAY);
         printf("Recieved from: %s, Value is: %d\n", data.sender, data.value);
+        printf("Recieved from: %s, Value is: %d\n", data2.sender, data2.value);
     }
 }
