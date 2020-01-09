@@ -22,7 +22,7 @@
 /* Data struct, this is the message information. */
 typedef struct
 {
-    int sender;
+    char* sender;
     int value;
 }Data;
 
@@ -40,7 +40,7 @@ void setup() {
     }
     xTaskCreate(
         dirController, /*Task function */
-        "Wind direction controller", /* Name of task. */
+        "WDCT", /* Name of task. */
         10000, /* Stack size of task */
         NULL, /* paramter of the task */
         1, /* priority of the task */
@@ -55,6 +55,6 @@ void app_main(void)
     for(;;){
         vTaskDelay(100);
         xQueueReceive(dirQueue, &data, portMAX_DELAY);
-        printf("Recieved from: %d, Value is: %d\n", data.sender, data.value);
+        printf("Recieved from: %s, Value is: %d\n", data.sender, data.value);
     }
 }
