@@ -1,4 +1,4 @@
-This file is for all sensors that are connected to the esp32
+This folder is for all sensors that are connected to the esp32
 
 dirSensor.* is for the direction sensors.
 
