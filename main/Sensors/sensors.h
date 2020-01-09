@@ -12,7 +12,7 @@
 /* Data struct, this is the message information. */
 typedef struct
 {
-    int sender;
+    char* sender;
     int value;
 } Data;
 
