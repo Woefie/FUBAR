@@ -1,12 +1,6 @@
 #include "dirSensor.h"
 #include <driver/adc.h>
 
-typedef struct
-{
-    char* sender;
-    int value;
-}Data;
-
 /* Main function for direction controller */
 void dirController(void *parameter) {
     int potValue = 0;
@@ -26,7 +20,8 @@ void dirController(void *parameter) {
 }
 
 /* Retrieve value from sensor */
-void getSensorValue(char* value, int length) {
+void getSensorValue(char *value, int length)
+{
     fgets(value, length, stdin);
 }
 
@@ -47,7 +42,8 @@ int convertValue(int value) {
 }
 
 /* Send value to main controller */
-void sendValue(int value) {
+void sendValue(int value)
+{
     Data data;
     data.sender = pcTaskGetTaskName(NULL);
     data.value = value;
