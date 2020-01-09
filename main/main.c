@@ -17,14 +17,7 @@
 #include "esp_system.h"
 #include "esp_spi_flash.h"
 
-#include "Sensors/dirSensor.h"
-
-/* Data struct, this is the message information. */
-typedef struct
-{
-    int sender;
-    int value;
-} Data;
+#include "Sensors/sensors.h"
 
 /* Initialisation of direction queue. Queue is used as massage parser */
 QueueHandle_t dirQueue;
