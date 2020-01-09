@@ -1,0 +1,7 @@
+This file is for all sensors that are connected to the esp32
+
+dirSensor.* is for the direction sensors.
+
+speedSensor.* is for the speed sensors.
+
+sensors.h is for data that is shared between all sensors

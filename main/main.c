@@ -8,7 +8,7 @@
 */
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h> 
+#include <unistd.h>
 
 #include <driver/adc.h>
 #include "freertos/FreeRTOS.h"
@@ -17,34 +17,35 @@
 #include "esp_system.h"
 #include "esp_spi_flash.h"
 
-#include "dirSensor.h"
+#include "Sensors/dirSensor.h"
 
 /* Data struct, this is the message information. */
 typedef struct
 {
     int sender;
     int value;
-}Data;
+} Data;
 
 /* Initialisation of direction queue. Queue is used as massage parser */
 QueueHandle_t dirQueue;
 
-
 void setup();
 
 /* Create tasks */
-void setup() {
+void setup()
+{
     dirQueue = xQueueCreate(1, sizeof(Data));
-    if(dirQueue == NULL) {
+    if (dirQueue == NULL)
+    {
         printf("Error creating the queue!\n");
     }
     xTaskCreate(
-        dirController, /*Task function */
+        dirController,               /*Task function */
         "Wind direction controller", /* Name of task. */
-        10000, /* Stack size of task */
-        NULL, /* paramter of the task */
-        1, /* priority of the task */
-        NULL /* Task handle to keep track of created task */
+        10000,                       /* Stack size of task */
+        NULL,                        /* paramter of the task */
+        1,                           /* priority of the task */
+        NULL                         /* Task handle to keep track of created task */
     );
 }
 
@@ -52,7 +53,8 @@ void app_main(void)
 {
     setup();
     Data data;
-    for(;;){
+    for (;;)
+    {
         vTaskDelay(100);
         xQueueReceive(dirQueue, &data, portMAX_DELAY);
         printf("Recieved from: %d, Value is: %d\n", data.sender, data.value);
