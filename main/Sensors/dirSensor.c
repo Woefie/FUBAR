@@ -11,11 +11,7 @@ void dirController(void *parameter)
     while (1)
     {
         vTaskDelay(50); /* If not included, watchdog will cry */
-        //getSensorValue(str, sizeof(str));
-        //if(str[0] != '\0') {
-        //    convertValue(str);
-        //    str[0] = '\0';
-        //}
+
         potValue = adc1_get_raw(ADC1_GPIO32_CHANNEL);
         convertDirValue(potValue);
     }

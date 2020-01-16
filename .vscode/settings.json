@@ -12,6 +12,7 @@
         "type_traits": "c",
         "utility": "c",
         "sensors.h": "c",
-        "speedsensor.h": "c"
+        "speedsensor.h": "c",
+        "pid.h": "c"
     }
 }
