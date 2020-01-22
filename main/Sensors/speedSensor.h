@@ -1,7 +1,7 @@
 #ifndef SPEEDSENSOR
 #define SPEEDSENSOR
 
-void speedController(void *parameter);
+void speedSensor(void *parameter);
 void getSpeedSensorValue(char *value, int length);
 int convertSpeedValue(char *str);
 

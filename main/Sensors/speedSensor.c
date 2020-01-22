@@ -1,9 +1,10 @@
 #include "speedSensor.h"
 #include "sensors.h"
-#include "Controllers/PID.h"
+//#include "Controllers/PID.h"
 
-void speedController(void *parameter)
+void speedSensor(void *parameter)
 {
+    printf("Starting speedController\n");
     char str[4];
     while (1)
     {
@@ -26,7 +27,7 @@ void getSpeedSensorValue(char *value, int length)
 int convertSpeedValue(char *str)
 {
     int value = atoi(str);
-    sendValue(value);
+    sendValue(value, speedSensorQueue);
 
     return value;
 }

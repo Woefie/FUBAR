@@ -9,8 +9,17 @@
 
 #include "speedSensor.h"
 #include "dirSensor.h"
+#include "dirController.h"
 
-QueueHandle_t dirQueue, speedQueue;
+QueueHandle_t dirSensorQueue, dirControllerQueue, speedSensorQueue;
+
+enum move {
+    RIGHT,
+    LEFT,
+    STOP
+};
+
+
 /* Data struct, this is the message information. */
 typedef struct
 {
@@ -18,6 +27,6 @@ typedef struct
     int value;
 } Data;
 
-void sendValue(int value);
+void sendValue(int value, QueueHandle_t queue);
 
 #endif

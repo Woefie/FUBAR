@@ -1,8 +1,11 @@
 #ifndef DIRSENSOR
 #define DIRSENSOR
 
-void dirController(void *parameter);
+#include "sensors.h"
+#include <driver/adc.h>
+
+void dirSensor(void *parameter);
 void getDirSensorValue(char *value, int length);
-int convertDirValue(int value);
+void convertDirValue(int value);
 
 #endif
