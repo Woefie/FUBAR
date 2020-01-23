@@ -5,7 +5,7 @@
 #include "sensors.h"
 
 void speedSensor(void *parameter);
-void getSpeedSensorValue(char *value, int length);
-void convertSpeedValue(int value);
+static void setup(void);
+double convertSpeedValue(int pulses);
 
 #endif

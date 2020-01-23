@@ -1,37 +1,56 @@
 #include "dirSensor.h"
-
+#include <math.h>
 #define DEGREE 11.7 /* What is one degree, sensor can only measure from 0 to 350 degree */
 #define CORRECTON 50 /* Correction so it has a small grey zone */
+#define SCHEDULE_TIME 50 /* Time between running of task (10 = 1 second )*/
+
 
 /* Main function for direction controller */
 void dirSensor(void *parameter)
 {
-    printf("Starting dirController\n");
-    int potValue = 0;
-    int previousValue = 0;
-    adc1_config_width(ADC_WIDTH_BIT_12);
-    adc1_config_channel_atten(ADC1_GPIO34_CHANNEL, ADC_ATTEN_DB_11);
-    while (1)
+    setup();                    // Setup for the dirSensor
+
+    TickType_t xLastWakeTime = xTaskGetTickCount(); // Get tickCount, used to calculate time between running of task
+    const TickType_t xFrequency = portTICK_PERIOD_MS * SCHEDULE_TIME; // Time when the function needs to run.
+
+    int value = 0;           // Variable to store the value from the adc
+
+    while (1)       
     {
-        vTaskDelay(50); /* If not included, watchdog will cry */
-        potValue = adc1_get_raw(ADC1_GPIO34_CHANNEL);
-        if (potValue < previousValue - CORRECTON || potValue > previousValue + CORRECTON)
-        {
-            previousValue = potValue;
-            convertDirValue(potValue / DEGREE);
-        }
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);            // To make the task periodic a delayUntil is needed.
+        int adcValue = getDirSensorValue();
+        if (adcValue != value) {
+            value = adcValue;                              // set value to the new value
+            sendValue(value, dirSensorQueue);              // send this value to the main function
+        }           
+        printf("Runnig! %d %d - ADC: %d\n", xLastWakeTime, xFrequency, adcValue);
     }
     vTaskDelete(NULL);
 }
 
-/* Retrieve value from sensor */
-void getDirSensorValue(char *value, int length)
-{
-    fgets(value, length, stdin);
+static void setup() {
+    printf("Starting %s\n", pcTaskGetTaskName(NULL));
+    // Show starting message of task
+    adc1_config_width(ADC_WIDTH_BIT_12);
+    // ADC_WIDTH_BIT_12 gives a 12 bit ADC value (0-4095)
+    adc1_config_channel_atten(ADC1_GPIO34_CHANNEL, ADC_ATTEN_DB_11);
+    // Set GPIO34 as ADC and set attenuation to 11 DB, beceause this gives full-scale voltage of 3.9
 }
 
-/* Convert value to readable form for the main controller */
-void convertDirValue(int value)
+
+/* Retrieve value from sensor, value is in this case the return value, aswell as the previous value */
+int getDirSensorValue(void)
 {
-    sendValue(value, dirSensorQueue);
+    int value = adc1_get_raw(ADC1_GPIO34_CHANNEL);   // Get the raw ADC value from GPIO34
+
+    convertDirValue(&value);                         // Convert value to degree
+    return value;
+}
+
+/* Convert value to degree for the main controller */
+void convertDirValue(int *value)
+{
+    *value = *value / DEGREE; // Convert Value to degrees
+
+    *value = round((float)(*value << 1) / 10) * 5; // Round it to 5 degree.
 }

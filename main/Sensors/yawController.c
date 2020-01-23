@@ -1,4 +1,4 @@
-#include "dirController.h"
+#include "yawController.h"
 /* Connect Step to GPIO 25 and Direction to GPIO 26 
    The dirController whil recieve a value from the main controller as follows:
    - 0 turn left

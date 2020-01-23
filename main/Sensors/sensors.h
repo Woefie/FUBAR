@@ -9,7 +9,7 @@
 
 #include "speedSensor.h"
 #include "dirSensor.h"
-#include "dirController.h"
+#include "yawController.h"
 
 QueueHandle_t dirSensorQueue, dirControllerQueue, speedSensorQueue;
 
