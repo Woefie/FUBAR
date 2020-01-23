@@ -30,7 +30,7 @@ void checkDirInbox(int *action) {
     Data message;                   
     if(uxQueueMessagesWaiting(dirControllerQueue)) { /* Check if a message is in the queue, to prevent starvation */
         xQueueReceive(dirControllerQueue, &message, portMAX_DELAY);                 
-        printf("Recieved from: %s, Value is: %d\n", message.sender, message.value);
+        //printf("Recieved from: %s, Value is: %d\n", message.sender, message.value);
         if (message.value != STOP) {                        // If the message is not the stop message, change direction.
             direction(message.value);                       // Adjust direction.
         }

@@ -80,8 +80,7 @@ void app_main(void)
         if(uxQueueMessagesWaiting(dirSensorQueue)) { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(dirSensorQueue, &dirSensor, portMAX_DELAY);
             printf("Recieved from: %s, Value is: %d\n", dirSensor.sender, dirSensor.value);
-            yawControl(dirSensor.value);
-
+            //yawControl(dirSensor.value);
         }
 
         if(uxQueueMessagesWaiting(speedSensorQueue)) { /* Check if a message is in the queue, to prevent starvation */
