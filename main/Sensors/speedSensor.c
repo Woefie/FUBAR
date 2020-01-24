@@ -3,29 +3,30 @@
 #include <math.h>
 
 #define SCHEDULE_TIME 50 /* Time between running of task (10 = 1 second )*/
-#define PCNT_UNIT      PCNT_UNIT_0
-#define PCNT_H_LIM_VAL      1000
-#define PCNT_INPUT_SIG_IO   4  // Pulse Input GPIO
+#define PCNT_UNIT PCNT_UNIT_0
+#define PCNT_H_LIM_VAL 1000
+#define PCNT_INPUT_SIG_IO 4 // Pulse Input GPIO
 //#include "Controllers/PID.h"
 
 void speedSensor(void *parameter)
 {
     setup();
     int16_t pulses = 0;
-    int lastSpeed = 0;                  // Variables to keep track of the number of pulses and the lastSpeed
-    
-    TickType_t xLastWakeTime = xTaskGetTickCount(); // Get tickCount, used to calculate time between running of task
+    int lastSpeed = 0; // Variables to keep track of the number of pulses and the lastSpeed
+
+    TickType_t xLastWakeTime = xTaskGetTickCount();                   // Get tickCount, used to calculate time between running of task
     const TickType_t xFrequency = portTICK_PERIOD_MS * SCHEDULE_TIME; // Time when the function needs to run.
- 
+
     while (1)
     {
-        vTaskDelayUntil(&xLastWakeTime, xFrequency);            // To make the task periodic a delayUntil is needed.
-        pcnt_get_counter_value(PCNT_UNIT, &pulses);        // Get number of pulses from the pulse counter
-        double mpersecond = convertSpeedValue(pulses);          // Convert pulses to m/s
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);   // To make the task periodic a delayUntil is needed.
+        pcnt_get_counter_value(PCNT_UNIT, &pulses);    // Get number of pulses from the pulse counter
+        double mpersecond = convertSpeedValue(pulses); // Convert pulses to m/s
         printf("Runnig! %d %d - PULSES: %d - m/s %.2f\n", xLastWakeTime, xFrequency, pulses, mpersecond);
         mpersecond = round(mpersecond);
 
-        if (mpersecond != lastSpeed) {              // If speed changed
+        if (mpersecond != lastSpeed)
+        {                                           // If speed changed
             lastSpeed = mpersecond;                 // Change last
             sendValue(lastSpeed, speedSensorQueue); // Send value to main function
         }
@@ -40,7 +41,7 @@ void speedSensor(void *parameter)
 }
 
 static void setup()
- {
+{
     printf("Starting %s\n", pcTaskGetTaskName(NULL));
     //adc1_config_width(ADC_WIDTH_BIT_12);
     //adc1_config_channel_atten(ADC1_GPIO32_CHANNEL, ADC_ATTEN_DB_11);
@@ -53,8 +54,8 @@ static void setup()
         .channel = PCNT_CHANNEL_0,
         .unit = PCNT_UNIT,
         // What to do on the positive / negative edge of pulse input?
-        .pos_mode = PCNT_COUNT_INC,   // Count up on the positive edge
-        .neg_mode = PCNT_COUNT_DIS,   // Keep the counter value on the negative edge
+        .pos_mode = PCNT_COUNT_INC, // Count up on the positive edge
+        .neg_mode = PCNT_COUNT_DIS, // Keep the counter value on the negative edge
         // Set the maximum limit value
         .counter_h_lim = PCNT_H_LIM_VAL,
     };
@@ -71,12 +72,11 @@ static void setup()
 
     /* Everything is set up, now go to counting */
     pcnt_counter_resume(PCNT_UNIT);
- }
-
+}
 
 double convertSpeedValue(int pulses)
 {
-    double speed;                                                   // Variable to hold the speed
-    speed = (float)pulses / (SCHEDULE_TIME / 10) * (30.0 / 67.0);   // Datasheet shows 67 pulsen per 30 m/s, so 1 pulse is 30 / 67
-    return speed;                                                   // Return speed value
+    double speed;                                                 // Variable to hold the speed
+    speed = (float)pulses / (SCHEDULE_TIME / 10) * (30.0 / 67.0); // Datasheet shows 67 pulsen per 30 m/s, so 1 pulse is 30 / 67
+    return speed;                                                 // Return speed value
 }

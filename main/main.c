@@ -19,13 +19,16 @@
 
 #include "Sensors/sensors.h"
 
-/* Initialisation of direction queue. Queue is used as massage parser */
+#define PERFECTYAWLOW 140
+#define PERFECTYAWHIGH 150
 
-void setup();
-void yawControl(int value);
+#define SCHEDULE_TIME 10 /* Time between running of task (10 = 1 second )*/
+
+static void setup();
+void turnYaw(int value);
 
 /* Create tasks */
-void setup()
+static void setup()
 {
     dirSensorQueue = xQueueCreate(1, sizeof(Data));
     if (dirSensorQueue == NULL)
@@ -33,26 +36,26 @@ void setup()
         printf("Error creating the dir queue!\n");
     }
     xTaskCreate(
-        dirSensor, /*Task function */
-        "DIRSENSOR",        /* Name of task. */
-        10000,         /* Stack size of task */
-        NULL,          /* paramter of the task */
-        1,             /* priority of the task */
-        NULL           /* Task handle to keep track of created task */
+        dirSensor,   /*Task function */
+        "DIRSENSOR", /* Name of task. */
+        10000,       /* Stack size of task */
+        NULL,        /* paramter of the task */
+        1,           /* priority of the task */
+        NULL         /* Task handle to keep track of created task */
     );
 
-    dirControllerQueue = xQueueCreate(1, sizeof(Data));
-    if (dirControllerQueue == NULL)
+    yawControllerQueue = xQueueCreate(1, sizeof(Data));
+    if (yawControllerQueue == NULL)
     {
         printf("Error creating the yaw queue!\n");
     }
     xTaskCreate(
-        dirController, /*Task function */
-        "dirCONTROLLER",        /* Name of task. */
-        10000,         /* Stack size of task */
-        NULL,          /* paramter of the task */
-        1,             /* priority of the task */
-        NULL           /* Task handle to keep track of created task */
+        yawController,   /*Task function */
+        "YAWCONTROLLER", /* Name of task. */
+        10000,           /* Stack size of task */
+        NULL,            /* paramter of the task */
+        1,               /* priority of the task */
+        NULL             /* Task handle to keep track of created task */
     );
 
     speedSensorQueue = xQueueCreate(1, sizeof(Data));
@@ -61,43 +64,50 @@ void setup()
         printf("Error creating the speed queue!\n");
     }
     xTaskCreate(
-        speedSensor, /*Task function */
-        "SPEEDSENSOR",          /* Name of task. */
-        10000,           /* Stack size of task */
-        NULL,            /* paramter of the task */
-        1,               /* priority of the task */
-        NULL             /* Task handle to keep track of created task */
+        speedSensor,   /*Task function */
+        "SPEEDSENSOR", /* Name of task. */
+        10000,         /* Stack size of task */
+        NULL,          /* paramter of the task */
+        1,             /* priority of the task */
+        NULL           /* Task handle to keep track of created task */
     );
 }
 
 void app_main(void)
 {
     setup();
+
+    TickType_t xLastWakeTime = xTaskGetTickCount();                   // Get tickCount, used to calculate time between running of task
+    const TickType_t xFrequency = portTICK_PERIOD_MS * SCHEDULE_TIME; // Time when the function needs to run.
+
     Data dirSensor, speedSensor;
     for (;;)
     {
-        vTaskDelay(100);
-        if(uxQueueMessagesWaiting(dirSensorQueue)) { /* Check if a message is in the queue, to prevent starvation */
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);            // To make the task periodic a delayUntil is needed.
+        if (uxQueueMessagesWaiting(dirSensorQueue))
+        { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(dirSensorQueue, &dirSensor, portMAX_DELAY);
             printf("Recieved from: %s, Value is: %d\n", dirSensor.sender, dirSensor.value);
-            //yawControl(dirSensor.value);
+            turnYaw(dirSensor.value);
+            //sendValue(dirSensor.value, yawControllerQueue);
         }
 
-        if(uxQueueMessagesWaiting(speedSensorQueue)) { /* Check if a message is in the queue, to prevent starvation */
+        if (uxQueueMessagesWaiting(speedSensorQueue))
+        { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(speedSensorQueue, &speedSensor, portMAX_DELAY);
-            printf("Recieved from: %s, Value is: %d\n", speedSensor.sender, speedSensor.value);
+            //printf("Recieved from: %s, Value is: %d\n", speedSensor.sender, speedSensor.value);
         }
     }
 }
 
-void yawControl(int value) {
-    if (value == 0) {
-        sendValue(STOP, dirControllerQueue);
+void turnYaw(int degree) {
+    if(degree < PERFECTYAWLOW) {
+        sendValue(LEFT, yawControllerQueue);
     }
-    else if(value < 0) {
-        sendValue(RIGHT, dirControllerQueue);
+    else if(degree > PERFECTYAWHIGH) {
+        sendValue(RIGHT, yawControllerQueue);
     }
-    else if(value > 0) {
-        sendValue(LEFT, dirControllerQueue);
+    else {
+        sendValue(STOP, yawControllerQueue);
     }
 }

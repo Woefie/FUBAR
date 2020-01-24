@@ -11,7 +11,7 @@
 #include "dirSensor.h"
 #include "yawController.h"
 
-QueueHandle_t dirSensorQueue, dirControllerQueue, speedSensorQueue;
+QueueHandle_t dirSensorQueue, yawControllerQueue, speedSensorQueue;
 
 enum move {
     RIGHT,
