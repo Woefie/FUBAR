@@ -3,7 +3,8 @@ set(COMPONENT_REQUIRES )
 set(COMPONENT_PRIV_REQUIRES )
 
 set(COMPONENT_SRCS 
-    "main.c" 
+    "main.c"
+    "Sensors/controller.c"
     "Sensors/dirSensor.c" 
     "Sensors/yawController.c"
     "Sensors/speedSensor.c" 

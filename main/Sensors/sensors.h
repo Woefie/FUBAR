@@ -7,6 +7,7 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 
+#include "controller.h"
 #include "speedSensor.h"
 #include "dirSensor.h"
 #include "yawController.h"

@@ -22,7 +22,7 @@ void speedSensor(void *parameter)
         vTaskDelayUntil(&xLastWakeTime, xFrequency);   // To make the task periodic a delayUntil is needed.
         pcnt_get_counter_value(PCNT_UNIT, &pulses);    // Get number of pulses from the pulse counter
         double mpersecond = convertSpeedValue(pulses); // Convert pulses to m/s
-        printf("Runnig! %d %d - PULSES: %d - m/s %.2f\n", xLastWakeTime, xFrequency, pulses, mpersecond);
+        //printf("Runnig! %d %d - PULSES: %d - m/s %.2f\n", xLastWakeTime, xFrequency, pulses, mpersecond);
         mpersecond = round(mpersecond);
 
         if (mpersecond != lastSpeed)
@@ -42,7 +42,7 @@ void speedSensor(void *parameter)
 
 static void setup()
 {
-    printf("Starting %s\n", pcTaskGetTaskName(NULL));
+    printf("Starting %s on core %d\n", pcTaskGetTaskName(NULL), xPortGetCoreID());
     //adc1_config_width(ADC_WIDTH_BIT_12);
     //adc1_config_channel_atten(ADC1_GPIO32_CHANNEL, ADC_ATTEN_DB_11);
 

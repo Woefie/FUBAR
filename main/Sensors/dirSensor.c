@@ -30,14 +30,14 @@ void dirSensor(void *parameter)
             previousMeasurement = average;                 // set value to the new value
             sendValue(previousMeasurement, dirSensorQueue); // send this value to the main function
         }
-        printf("Runnig! %d %d - ADC: %d\n", xLastWakeTime, xFrequency, previousMeasurement);
+        //printf("Runnig! %d %d - ADC: %d\n", xLastWakeTime, xFrequency, previousMeasurement);
     }
     vTaskDelete(NULL);
 }
 
 static void setup()
 {
-    printf("Starting %s\n", pcTaskGetTaskName(NULL));
+    printf("Starting %s on core %d\n", pcTaskGetTaskName(NULL), xPortGetCoreID());
     // Show starting message of task
     adc1_config_width(ADC_WIDTH_BIT_12);
     // ADC_WIDTH_BIT_12 gives a 12 bit ADC value (0-4095)
