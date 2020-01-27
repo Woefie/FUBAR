@@ -13,6 +13,7 @@
         "utility": "c",
         "sensors.h": "c",
         "speedsensor.h": "c",
-        "pid.h": "c"
+        "pid.h": "c",
+        "*.tcc": "c"
     }
 }

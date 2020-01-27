@@ -17,9 +17,10 @@
 	Author website: http://www.geekfactory.mx
 	Author e-mail: ruben at geekfactory dot mx
  */
-#include "Controllers/PID.h"
+#include "PID.h"
+#include "sensors.h"
 
-pid_t pid_create(pid_t pid, float *in, float *out, float *set, float kp, float ki, float kd)
+pidC_t pid_create(pidC_t pid, float *in, float *out, float *set, float kp, float ki, float kd)
 {
 	pid->input = in;
 	pid->output = out;
@@ -29,27 +30,27 @@ pid_t pid_create(pid_t pid, float *in, float *out, float *set, float kp, float k
 	pid_limits(pid, 0, 255);
 
 	// Set default sample time to 100 ms
-	pid->sampletime = 100 * (TICK_SECOND / 1000);
+	pid->sampletime = portTICK_PERIOD_MS * 100;
 
 	pid_direction(pid, E_PID_DIRECT);
 	pid_tune(pid, kp, ki, kd);
 
-	pid->lasttime = tick_get() - pid->sampletime;
+	pid->lasttime = xTaskGetTickCount() - pid->sampletime;
 
 	return pid;
 }
 
-bool pid_need_compute(pid_t pid)
+bool pid_need_compute(pidC_t pid)
 {
 	// Check if the PID period has elapsed
-	return (tick_get() - pid->lasttime >= pid->sampletime) ? true : false;
+	return (xTaskGetTickCount() - pid->lasttime >= pid->sampletime) ? true : false;
 }
 
-void pid_compute(pid_t pid)
+void pid_compute(pidC_t pid)
 {
 	// Check if control is enabled
 	if (!pid->automode)
-		return false;
+		return;
 
 	float in = *(pid->input);
 	// Compute error
@@ -73,11 +74,10 @@ void pid_compute(pid_t pid)
 	(*pid->output) = out;
 	// Keep track of some variables for next execution
 	pid->lastin = in;
-	pid->lasttime = tick_get();
-	;
+	pid->lasttime = xTaskGetTickCount();
 }
 
-void pid_tune(pid_t pid, float kp, float ki, float kd)
+void pid_tune(pidC_t pid, float kp, float ki, float kd)
 {
 	// Check for validity
 	if (kp < 0 || ki < 0 || kd < 0)
@@ -98,7 +98,7 @@ void pid_tune(pid_t pid, float kp, float ki, float kd)
 	}
 }
 
-void pid_sample(pid_t pid, uint32_t time)
+void pid_sample(pidC_t pid, uint32_t time)
 {
 	if (time > 0)
 	{
@@ -109,7 +109,7 @@ void pid_sample(pid_t pid, uint32_t time)
 	}
 }
 
-void pid_limits(pid_t pid, float min, float max)
+void pid_limits(pidC_t pid, float min, float max)
 {
 	if (min >= max)
 		return;
@@ -130,7 +130,7 @@ void pid_limits(pid_t pid, float min, float max)
 	}
 }
 
-void pid_auto(pid_t pid)
+void pid_auto(pidC_t pid)
 {
 	// If going from manual to auto
 	if (!pid->automode)
@@ -145,12 +145,12 @@ void pid_auto(pid_t pid)
 	}
 }
 
-void pid_manual(pid_t pid)
+void pid_manual(pidC_t pid)
 {
 	pid->automode = false;
 }
 
-void pid_direction(pid_t pid, enum pid_control_directions dir)
+void pid_direction(pidC_t pid, enum pid_control_directions dir)
 {
 	if (pid->automode && pid->direction != dir)
 	{

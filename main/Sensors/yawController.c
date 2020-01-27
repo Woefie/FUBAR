@@ -13,7 +13,7 @@
 #define PERFECT_POSITION_TOP 150
 #define PERFECT_POSITION 145
 #define PERFECT_POSITION_BOTTOM 140
-#define GEAR_REATIO 16 // x rotations of stepper == one rotation of turbine
+#define GEAR_RATIO 16 // x rotations of stepper == one rotation of turbine
 
 #define SCHEDULE_TIME 16 /* Time between running of task (10 = 1 second )*/
 
@@ -39,7 +39,7 @@ void yawController(void *parameter)
             {
                 direction(LEFT);
             }
-            int steps = abs((PERFECT_POSITION - position) * GEAR_REATIO / STEP_DEGREE);
+            int steps = abs((PERFECT_POSITION - position) * GEAR_RATIO / STEP_DEGREE);
             printf("Doing %d steps\n", steps);
             for (int i = 0; i < steps; i++)
             {
