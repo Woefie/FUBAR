@@ -7,7 +7,8 @@ set(COMPONENT_SRCS
     "Sensors/controller.c"
     "Sensors/dirSensor.c" 
     "Sensors/yawController.c"
-    "Sensors/speedSensor.c" 
+    "Sensors/speedSensor.c"
+    "Sensors/pitchController.c" 
     "Sensors/sensors.c" 
     "Peripherals/uart.c"
     "Peripherals/adc.c")

@@ -1,6 +1,5 @@
 #include "controller.h"
 
-
 #define PERFECTYAWLOW 140
 #define PERFECTYAWHIGH 150
 
@@ -37,15 +36,20 @@ static void setup(void)
     printf("Starting %s on core %d\n", pcTaskGetTaskName(NULL), xPortGetCoreID());
 }
 
-void moveYaw(int value) {
-    if(value >= PERFECTYAWLOW && value <= PERFECTYAWHIGH) {
+void moveYaw(int value)
+{
+    if (value >= PERFECTYAWLOW && value <= PERFECTYAWHIGH)
+    {
         value = (PERFECTYAWHIGH + PERFECTYAWLOW) >> 1;
     }
 
-    if(value >= 0 && value <= 360 ) {
+    if (value >= 0 && value <= 360)
+    {
         sendValue(value, yawControllerQueue);
+        sendValue(value, pitchControllerQueue);
     }
-    else {
+    else
+    {
         printf("ERROR VALUE FOUND!\n");
     }
 }

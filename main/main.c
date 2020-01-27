@@ -74,6 +74,22 @@ static void setup()
         NULL,          /* Task handle to keep track of created task */
         rtos_core      /* core to run task on */
     );
+
+    pitchControllerQueue = xQueueCreate(1, sizeof(Data));
+    if (pitchControllerQueue == NULL)
+    {
+        printf("Error creating the yaw queue!\n");
+    }
+    xTaskCreatePinnedToCore(
+        pitchController,   /*Task function */
+        "PITCHCONTROLLER", /* Name of task. */
+        10000,           /* Stack size of task */
+        NULL,            /* paramter of the task */
+        1,               /* priority of the task */
+        NULL,            /* Task handle to keep track of created task */
+        rtos_core        /* core to run task on */
+    );
+
 }
 
 void app_main(void)

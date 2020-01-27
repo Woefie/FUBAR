@@ -13,9 +13,9 @@
 #define PERFECT_POSITION_TOP 150
 #define PERFECT_POSITION 145
 #define PERFECT_POSITION_BOTTOM 140
-#define GEAR_REATIO 1 // x rotations of stepper == one rotation of turbine
+#define GEAR_REATIO 16 // x rotations of stepper == one rotation of turbine
 
-#define SCHEDULE_TIME 1 /* Time between running of task (10 = 1 second )*/
+#define SCHEDULE_TIME 16 /* Time between running of task (10 = 1 second )*/
 
 void yawController(void *parameter)
 {
@@ -33,11 +33,11 @@ void yawController(void *parameter)
 
             if (position > PERFECT_POSITION)
             {
-                direction(LEFT);
+                direction(RIGHT);
             }
             else if (position < PERFECT_POSITION)
             {
-                direction(RIGHT);
+                direction(LEFT);
             }
             int steps = abs((PERFECT_POSITION - position) * GEAR_REATIO / STEP_DEGREE);
             printf("Doing %d steps\n", steps);
@@ -61,7 +61,7 @@ static void setup()
     printf("Starting %s on core %d\n", pcTaskGetTaskName(NULL), xPortGetCoreID());
 
     gpio_set_direction(YAW_STEP_PIN, GPIO_MODE_OUTPUT); // Set GPIO 25 to output mode
-    gpio_set_direction(YAW_DIR_PIN, GPIO_MODE_OUTPUT); // Set GPIO 26 to output mode
+    gpio_set_direction(YAW_DIR_PIN, GPIO_MODE_OUTPUT);  // Set GPIO 26 to output mode
 }
 
 bool checkDirInbox(int *action)
@@ -71,7 +71,7 @@ bool checkDirInbox(int *action)
         Data message;
         /* Check if a message is in the queue, to prevent starvation */
         xQueueReceive(yawControllerQueue, &message, portMAX_DELAY);
-        printf("Recieved from: %s, Value is: %d\n", message.sender, message.value);
+        printf("%s Recieved from: %s, Value is: %d\n", pcTaskGetTaskName(NULL), message.sender, message.value);
         //printf("Recieved from: %s, Value is: %d\n", message.sender, message.value);
         //if (message.value != STOP)
         //{                             // If the message is not the stop message, change direction.
