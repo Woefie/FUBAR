@@ -9,7 +9,7 @@
 void pitchController(void *parameter);
 static void setup(void);
 bool checkPitchInbox(int *action);
-int calculateSpeedSteps(int angleDif);
-void setAnglePitch(int newAngle, int currentAngle);
+int calculatePitchSteps(int angleDif);
+void setPitchAngle(int newAngle, int currentAngle);
 
 #endif

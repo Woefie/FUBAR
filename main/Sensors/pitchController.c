@@ -8,13 +8,9 @@
    When the direction sensor shows the turbine is at the right position it sends a stop
 */
 
-#define PITCH_STEP_PIN GPIO_NUM_18
-#define PITCH_DIR_PIN GPIO_NUM_19
-#define STEP_DEGREE 1.8
-#define GEAR_RATIO 16 // x rotations of stepper == one rotation of turbine
-#define MAX_SPEED 50
-#define MAX_PITCH 45
-#define MIN_PITCH 0
+#define PITCH_STEP_PIN GPIO_NUM_16
+#define PITCH_DIR_PIN GPIO_NUM_17
+// x rotations of stepper == one rotation of turbine
 
 void pitchController(void *parameter)
 {
@@ -22,46 +18,19 @@ void pitchController(void *parameter)
 
     TickType_t xLastWakeTime = xTaskGetTickCount();                      // Get tickCount, used to calculate time between running of task
     const TickType_t xFrequency = portTICK_PERIOD_MS * MOVEPITCH_PERIOD; // Time when the function needs to run.
-
-    // Structure to strore PID data and pointer to PID structure
-    struct pid_controller ctrldata;
-    pidC_t pid;
-
-    // Control loop input,output and setpoint variables
-    float input = 0, output = 0;
-    float setpoint = MAX_SPEED;
-    int currentAngle = 0;
-
-    // Control loop gains
-    float kp = 0.2, ki = 0.2, kd = 0.2;
-    // Prepare PID controller for operation
-    pid = pid_create(&ctrldata, &input, &output, &setpoint, kp, ki, kd);
-    // Set controler output limits from 0 to 45
-    pid_limits(pid, MIN_PITCH, MAX_PITCH);
-    // Allow PID to compute and change output
-    pid_auto(pid);
-
+    int currentAngle = 0, newAngle = 0;
     while (1)
     { // Task main loop
 
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
-        if (pid_need_compute(pid))
+        if (checkPitchInbox(&newAngle))
         {
 
-            int rotorSpeed = getRotorSpeedValue();
-            // Read process feedback
-            input = convertPotSpeedValue(rotorSpeed); //GET ROTOR SPEED
-            // Set the current angle for the rotor
-            currentAngle = output;
-
-            // Compute new PID output value;
-            pid_compute(pid);
-            //Change actuator value
-            setAnglePitch(output, currentAngle);
-            currentAngle = output;
-            printf("Current angle: %d\n", currentAngle);
+            setPitchAngle(newAngle, currentAngle);
+            currentAngle = newAngle;
         }
     }
+
     vTaskDelete(NULL); // Delete task when finished (just in case)
 }
 
@@ -72,7 +41,6 @@ static void setup()
     gpio_set_direction(PITCH_STEP_PIN, GPIO_MODE_OUTPUT); // Set GPIO to output mode
     gpio_set_direction(PITCH_DIR_PIN, GPIO_MODE_OUTPUT);  // Set GPIO to output mode
 
-    adc1_config_channel_atten(ADC1_GPIO32_CHANNEL, ADC_ATTEN_DB_11);
     // Set GPIO34 as ADC and set attenuation to 11 DB, beceause this gives full-scale voltage of 3.9
 }
 
@@ -91,7 +59,7 @@ bool checkPitchInbox(int *action)
     return false;
 }
 
-void setAnglePitch(int newAngle, int currentAngle)
+void setPitchAngle(int newAngle, int currentAngle)
 {
     // SetAnglePitch vergelijkt oude angle met nieuwe angle
     // 2. Check naar welke direction
@@ -114,10 +82,7 @@ void setAnglePitch(int newAngle, int currentAngle)
         setDirectionPitch(STOP);
         angleDif = 0;
     }
-
-    printf("Angle change: %d\n", angleDif);
-
-    steps = calculateSpeedSteps(angleDif);
+    steps = calculatePitchSteps(angleDif);
     for (int i = 0; i < steps; i++)
     {
         if (uxQueueMessagesWaiting(pitchControllerQueue))
@@ -130,3 +95,14 @@ void setAnglePitch(int newAngle, int currentAngle)
     }
 }
 
+int calculatePitchSteps(int angleDif)
+{
+    int steps;
+    return steps = abs(angleDif * PITCH_GEAR_RATIO / PITCH_STEP_DEGREE);
+}
+
+void setDirectionPitch(int direction)
+{
+
+    gpio_set_level(PITCH_DIR_PIN, direction); // Set gpio 26 high or low. Left is low right is high.
+}

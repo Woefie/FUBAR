@@ -11,9 +11,8 @@ void rotorSpeed(void *parameter)
     {
         vTaskDelayUntil(&xLastWakeTime, xFrequency); // To make the task periodic a delayUntil is needed.
 
-        int rotorSpeed = getRotorSpeedValue();
-        // Read process feedback
-        sendValue(convertPotSpeedValue(rotorSpeed), rotorSpeedQueue); //GET ROTOR SPEED
+                // Read process feedback
+        sendValue(getRotorSpeedValue(), rotorSpeedQueue); //GET ROTOR SPEED
         //printf("Runnig! %d %d - ADC: %d\n", xLastWakeTime, xFrequency, previousMeasurement);
     }
 

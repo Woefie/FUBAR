@@ -12,7 +12,8 @@ set(COMPONENT_SRCS
     "Sensors/sensors.c" 
     "Peripherals/uart.c"
     "Peripherals/adc.c"
-    "Sensors/PID.c")
+    "Sensors/PID.c"
+    "Sensors/rotorSpeed.c")
 set(COMPONENT_ADD_INCLUDEDIRS "")
 
 register_component()

@@ -9,8 +9,26 @@ void controller(void *parameter)
     const TickType_t xFrequency = portTICK_PERIOD_MS * CONTROLLER_PERIOD; // Time when the function needs to run.
 
     Data message;
+
+    // Structure to strore PID data and pointer to PID structure
+    struct pid_controller ctrldata;
+    pidC_t pid;
+
+    // Control loop input,output and setpoint variables
+    float input = 0, output = 0;
+    float setpoint = MAX_SPEED;
+
+    // Control loop gains
+    float kp = 1.5, ki = 0.5, kd = 0.5;
+    // Prepare PID controller for operation
+    pid = pid_create(&ctrldata, &input, &output, &setpoint, kp, ki, kd);
+    // Set controler output limits from 0 to 45
+    pid_limits(pid, MIN_PITCH, MAX_PITCH);
+    // Allow PID to compute and change output
+    pid_auto(pid);
     while (true)
     {
+        //clearScreen();
         vTaskDelayUntil(&xLastWakeTime, xFrequency); // To make the task periodic a delayUntil is needed.
         if (uxQueueMessagesWaiting(dirSensorQueue))
         { /* Check if a message is in the queue, to prevent starvation */
@@ -31,6 +49,10 @@ void controller(void *parameter)
         { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(rotorSpeedQueue, &message, portMAX_DELAY);
             printf("Recieved from: %s, Value is: %.2f\n", message.sender, message.value);
+            controlData.rotorSpeed = message.value;
+            input = message.value;
+
+            movePitch(pid);
         }
         printData();
     }
@@ -52,6 +74,7 @@ int calculateYawSteps(int position)
 
 void printData()
 {
+
     printf("Wind direction: %d, Wind speed: %.1f, Rotor speed: %d, Pitch angle: %d\n", controlData.windDirection, controlData.windSpeed, controlData.rotorSpeed, controlData.pitchAngle);
 }
 
@@ -72,15 +95,12 @@ void moveYaw(int value)
     }
 }
 
-int calculateSpeedSteps(int angleDif)
+void movePitch(pidC_t pid)
 {
-    int steps;
-    return steps = abs(angleDif * GEAR_RATIO / STEP_DEGREE);
-}
 
-void setDirectionPitch(int direction)
-{
-    gpio_set_level(PITCH_DIR_PIN, direction); // Set gpio 26 high or low. Left is low right is high.
+    pid_compute(pid);
+    controlData.pitchAngle = *pid->output;
+    sendValue(*pid->output, pitchControllerQueue);
 }
 
 void clearScreen()

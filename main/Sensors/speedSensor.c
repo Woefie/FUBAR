@@ -11,9 +11,9 @@ void speedSensor(void *parameter)
 {
     setup();
     int16_t pulses = 0;
-    int lastSpeed = 0; // Variables to keep track of the number of pulses and the lastSpeed
+    double lastSpeed = 0; // Variables to keep track of the number of pulses and the lastSpeed
 
-    TickType_t xLastWakeTime = xTaskGetTickCount();                   // Get tickCount, used to calculate time between running of task
+    TickType_t xLastWakeTime = xTaskGetTickCount();                      // Get tickCount, used to calculate time between running of task
     const TickType_t xFrequency = portTICK_PERIOD_MS * WINDSPEED_PERIOD; // Time when the function needs to run.
 
     while (1)
@@ -22,7 +22,7 @@ void speedSensor(void *parameter)
         pcnt_get_counter_value(PCNT_UNIT, &pulses);    // Get number of pulses from the pulse counter
         double mpersecond = convertSpeedValue(pulses); // Convert pulses to m/s
         //printf("Runnig! %d %d - PULSES: %d - m/s %.1f\n", xLastWakeTime, xFrequency, pulses, mpersecond);
-        mpersecond = round(mpersecond);
+        mpersecond = mpersecond;
 
         if (mpersecond != lastSpeed)
         {                                           // If speed changed
@@ -75,7 +75,7 @@ static void setup()
 
 double convertSpeedValue(int pulses)
 {
-    double speed;                                                 // Variable to hold the speed
+    double speed;                                                    // Variable to hold the speed
     speed = (float)pulses / (WINDSPEED_PERIOD / 10) * (30.0 / 67.0); // Datasheet shows 67 pulsen per 30 m/s, so 1 pulse is 30 / 67
-    return speed;                                                 // Return speed value
+    return speed;                                                    // Return speed value
 }
