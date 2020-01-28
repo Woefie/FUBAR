@@ -1,4 +1,5 @@
 #include "pitchController.h"
+#include <unistd.h>
 
 /* Connect Step to GPIO 25 and Direction to GPIO 26 
    The dirController whil recieve a value from the main controller as follows:
@@ -12,7 +13,7 @@
 #define PITCH_DIR_PIN GPIO_NUM_19
 #define STEP_DEGREE 1.8
 #define GEAR_RATIO 16 // x rotations of stepper == one rotation of turbine
-#define MAX_SPEED 100
+#define MAX_SPEED 50
 #define MAX_PITCH 45
 #define MIN_PITCH 0
 
@@ -35,30 +36,33 @@ void pitchController(void *parameter)
     int currentAngle = 0;
 
     // Control loop gains
-    float kp = 2.5, ki = 1.0, kd = 1.0;
+    float kp = 0.2, ki = 0.2, kd = 0.2;
     // Prepare PID controller for operation
     pid = pid_create(&ctrldata, &input, &output, &setpoint, kp, ki, kd);
-    // Set controler output limits from 0 to 200
+    // Set controler output limits from 0 to 45
     pid_limits(pid, MIN_PITCH, MAX_PITCH);
     // Allow PID to compute and change output
     pid_auto(pid);
 
     while (1)
     { // Task main loop
+        clearScreen();
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
         // Check if need to compute PID
         if (pid_need_compute(pid))
         {
-            int rotorSpeed = getDirSensorValue();
+            int rotorSpeed = getRotorSpeedValue();
             // Read process feedback
             input = convertPotSpeedValue(rotorSpeed); //GET ROTOR SPEED
             // Set the current angle for the rotor
-            currentAngle = output;
+
             // Compute new PID output value;
             pid_compute(pid);
             //Change actuator value
             setAnglePitch(output, currentAngle);
+            currentAngle = output;
+            printf("Current angle: %d\n", currentAngle);
         }
     }
     vTaskDelete(NULL); // Delete task when finished (just in case)
@@ -118,7 +122,7 @@ void setAnglePitch(int newAngle, int currentAngle)
         angleDif = 0;
     }
 
-    printf("Angle change = %d", angleDif);
+    printf("Angle change: %d\n", angleDif);
 
     steps = calculateSpeedSteps(angleDif);
     for (int i = 0; i < steps; i++)
@@ -162,6 +166,11 @@ int convertPotSpeedValue(int value)
 
     value = (value >> 1) << 1;
     //*value = round((float)(*value << 1) / 10) * 5; // Round it to 5 degree.
-    printf("Speed of rotor: %d", value);
+    printf("Speed of rotor: %d\n", value);
     return value;
+}
+void clearScreen()
+{
+    const char *CLEAR_SCREEN_ANSI = "\e[1;1H\e[2J";
+    write(STDOUT_FILENO, CLEAR_SCREEN_ANSI, 12);
 }

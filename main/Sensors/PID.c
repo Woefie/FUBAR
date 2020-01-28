@@ -30,7 +30,7 @@ pidC_t pid_create(pidC_t pid, float *in, float *out, float *set, float kp, float
 	pid_limits(pid, 0, 255);
 
 	// Set default sample time to 100 ms
-	pid->sampletime = portTICK_PERIOD_MS * 100;
+	pid->sampletime = portTICK_PERIOD_MS * 1;
 
 	pid_direction(pid, E_PID_DIRECT);
 	pid_tune(pid, kp, ki, kd);
@@ -67,9 +67,9 @@ void pid_compute(pidC_t pid)
 	float out = pid->Kp * error + pid->iterm - pid->Kd * dinput;
 	// Apply limit to output value
 	if (out > pid->omax)
-		out = pid->omax;
-	else if (out < pid->omin)
 		out = pid->omin;
+	else if (out < pid->omin)
+		out = pid->omax;
 	// Output to pointed variable
 	(*pid->output) = out;
 	// Keep track of some variables for next execution

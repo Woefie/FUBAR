@@ -14,5 +14,6 @@ void setAnglePitch(int newAngle, int currentAngle);
 void setDirectionPitch(int direction);
 int getRotorSpeedValue(void);
 int convertPotSpeedValue(int value);
+void clearScreen();
 
 #endif
