@@ -10,17 +10,18 @@
 #include "controller.h"
 #include "speedSensor.h"
 #include "dirSensor.h"
+#include "rotorSpeed.h"
 #include "yawController.h"
 #include "pitchController.h"
 
-QueueHandle_t dirSensorQueue, yawControllerQueue, speedSensorQueue, pitchControllerQueue;
+QueueHandle_t dirSensorQueue, yawControllerQueue, speedSensorQueue, rotorSpeedQueue, pitchControllerQueue;
 
-enum move {
+enum move
+{
     RIGHT,
     LEFT,
     STOP
 };
-
 
 /* Data struct, this is the message information. */
 typedef struct

@@ -13,4 +13,7 @@ static void setup(void);
 void controller(void *parameter);
 int calculateYawSteps(int position);
 void moveYaw(int value);
+int calculateSpeedSteps(int angleDif);
+void setDirectionPitch(int direction);
+void clearScreen();
 #endif

@@ -1,5 +1,4 @@
 #include "pitchController.h"
-#include <unistd.h>
 
 /* Connect Step to GPIO 25 and Direction to GPIO 26 
    The dirController whil recieve a value from the main controller as follows:
@@ -44,7 +43,7 @@ void pitchController(void *parameter)
 
     while (1)
     { // Task main loop
-        clearScreen();
+
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
         if (pid_need_compute(pid))
         {
@@ -131,40 +130,3 @@ void setAnglePitch(int newAngle, int currentAngle)
     }
 }
 
-int calculateSpeedSteps(int angleDif)
-{
-    int steps;
-    return steps = abs(angleDif * GEAR_RATIO / STEP_DEGREE);
-}
-
-void setDirectionPitch(int direction)
-{
-    gpio_set_level(PITCH_DIR_PIN, direction); // Set gpio 26 high or low. Left is low right is high.
-}
-
-/* Retrieve value from sensor, value is in this case the return value, aswell as the previous value */
-int getRotorSpeedValue(void)
-{
-    //int value = adc1_get_raw(ADC1_GPIO34_CHANNEL); // Get the raw ADC value from GPIO34
-
-    //convertDirValue(&value); // Convert value to degree
-    //return value;
-    return adc1_get_raw(ADC1_GPIO32_CHANNEL); // Get the raw ADC value from GPIO34
-}
-
-/* Convert value to degree for the main controller */
-int convertPotSpeedValue(int value)
-{
-
-    value = value / 40; // Convert Value to degrees
-
-    value = (value >> 1) << 1;
-    //*value = round((float)(*value << 1) / 10) * 5; // Round it to 5 degree.
-    printf("Speed of rotor: %d\n", value);
-    return value;
-}
-void clearScreen()
-{
-    const char *CLEAR_SCREEN_ANSI = "\e[1;1H\e[2J";
-    write(STDOUT_FILENO, CLEAR_SCREEN_ANSI, 12);
-}

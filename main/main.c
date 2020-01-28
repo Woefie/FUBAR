@@ -21,13 +21,13 @@ static void setup()
     int rtos_core = (xPortGetCoreID() & 0b1) ^ 1; /* Start all RTOS functions on the other core than the main app */
 
     xTaskCreatePinnedToCore(
-        controller,  /*Task function */
+        controller,   /*Task function */
         "CONTROLLER", /* Name of task. */
-        10000,       /* Stack size of task */
-        NULL,        /* paramter of the task */
-        1,           /* priority of the task */
-        NULL,        /* Task handle to keep track of created task */
-        rtos_core    /* core to run task on */
+        10000,        /* Stack size of task */
+        NULL,         /* paramter of the task */
+        1,            /* priority of the task */
+        NULL,         /* Task handle to keep track of created task */
+        rtos_core     /* core to run task on */
     );
 
     dirSensorQueue = xQueueCreate(1, sizeof(Data));
@@ -83,20 +83,34 @@ static void setup()
     xTaskCreatePinnedToCore(
         pitchController,   /*Task function */
         "PITCHCONTROLLER", /* Name of task. */
-        10000,           /* Stack size of task */
-        NULL,            /* paramter of the task */
-        1,               /* priority of the task */
-        NULL,            /* Task handle to keep track of created task */
-        rtos_core        /* core to run task on */
+        10000,             /* Stack size of task */
+        NULL,              /* paramter of the task */
+        1,                 /* priority of the task */
+        NULL,              /* Task handle to keep track of created task */
+        rtos_core          /* core to run task on */
     );
 
+    rotorSpeedQueue = xQueueCreate(1, sizeof(Data));
+    if (rotorSpeedQueue == NULL)
+    {
+        printf("Error creating the rotor speed queue!\n");
+    }
+    xTaskCreatePinnedToCore(
+        rotorSpeed,   /*Task function */
+        "ROTORSPEED", /* Name of task. */
+        10000,        /* Stack size of task */
+        NULL,         /* paramter of the task */
+        1,            /* priority of the task */
+        NULL,         /* Task handle to keep track of created task */
+        rtos_core     /* core to run task on */
+    );
 }
 
 void app_main(void)
 {
     setup();
     /* Reserverd for other function that are not realtime */
-    while(true)
+    while (true)
     {
         vTaskDelay(100000);
     }
