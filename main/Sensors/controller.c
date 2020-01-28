@@ -18,10 +18,9 @@ void controller(void *parameter)
     float input = 0, output = 0;
     float setpoint = MAX_SPEED;
 
-    // Control loop gains
-    float kp = 1.5, ki = 0.5, kd = 0.5;
+   
     // Prepare PID controller for operation
-    pid = pid_create(&ctrldata, &input, &output, &setpoint, kp, ki, kd);
+    pid = pid_create(&ctrldata, &input, &output, &setpoint, KP, KI, KD);
     // Set controler output limits from 0 to 45
     pid_limits(pid, MIN_PITCH, MAX_PITCH);
     // Allow PID to compute and change output
@@ -33,22 +32,25 @@ void controller(void *parameter)
         if (uxQueueMessagesWaiting(dirSensorQueue))
         { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(dirSensorQueue, &message, portMAX_DELAY);
-            printf("Recieved from: %s, Value is: %.1f\n", message.sender, message.value);
+            printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
             controlData.windDirection = (int)message.value;
-            moveYaw(message.value);
+            if (controlData.windSpeed > 0)
+            {
+                moveYaw(message.value);
+            }
         }
 
         if (uxQueueMessagesWaiting(speedSensorQueue))
         { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(speedSensorQueue, &message, portMAX_DELAY);
-            printf("Recieved from: %s, Value is: %.1f\n", message.sender, message.value);
+            printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
             controlData.windSpeed = message.value;
         }
 
         if (uxQueueMessagesWaiting(rotorSpeedQueue))
         { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(rotorSpeedQueue, &message, portMAX_DELAY);
-            printf("Recieved from: %s, Value is: %.2f\n", message.sender, message.value);
+            printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
             controlData.rotorSpeed = message.value;
             input = message.value;
 

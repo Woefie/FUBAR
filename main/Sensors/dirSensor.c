@@ -31,8 +31,8 @@ static void setup(void)
 {
     printf("Starting %s on core %d\n", pcTaskGetTaskName(NULL), xPortGetCoreID());
     // Show starting message of task
-    adc1_config_width(ADC_WIDTH_BIT_12);
-    // ADC_WIDTH_BIT_12 gives a 12 bit ADC value (0-4095)
+    adc1_config_width(ADC_WIDTH_BIT_9);
+    // ADC_WIDTH_BIT_9 gives a 9 bit ADC value (0-511)
     adc1_config_channel_atten(ADC1_GPIO34_CHANNEL, ADC_ATTEN_DB_11);
     // Set GPIO34 as ADC and set attenuation to 11 DB, beceause this gives full-scale voltage of 3.9
 }

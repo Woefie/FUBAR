@@ -31,7 +31,7 @@ int getRotorSpeedValue(void)
 
     int value = adc1_get_raw(ADC1_GPIO32_CHANNEL); // Get the raw ADC value from GPIO32
 
-    value = value / 40; // Convert Value to degrees
+    value = value / 5; // Convert Value to degrees
 
     value = (value >> 1) << 1;
 
