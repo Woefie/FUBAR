@@ -26,9 +26,9 @@ enum move {
 typedef struct
 {
     char *sender;
-    int value;
+    double value;
 } Data;
 
-void sendValue(int value, QueueHandle_t queue);
+void sendValue(double value, QueueHandle_t queue);
 
 #endif

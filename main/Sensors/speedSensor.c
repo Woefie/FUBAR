@@ -2,7 +2,6 @@
 #include "driver/pcnt.h"
 #include <math.h>
 
-#define SCHEDULE_TIME 50 /* Time between running of task (10 = 1 second )*/
 #define PCNT_UNIT PCNT_UNIT_0
 #define PCNT_H_LIM_VAL 1000
 #define PCNT_INPUT_SIG_IO 4 // Pulse Input GPIO
@@ -15,7 +14,7 @@ void speedSensor(void *parameter)
     int lastSpeed = 0; // Variables to keep track of the number of pulses and the lastSpeed
 
     TickType_t xLastWakeTime = xTaskGetTickCount();                   // Get tickCount, used to calculate time between running of task
-    const TickType_t xFrequency = portTICK_PERIOD_MS * SCHEDULE_TIME; // Time when the function needs to run.
+    const TickType_t xFrequency = portTICK_PERIOD_MS * WINDSPEED_PERIOD; // Time when the function needs to run.
 
     while (1)
     {
@@ -77,6 +76,6 @@ static void setup()
 double convertSpeedValue(int pulses)
 {
     double speed;                                                 // Variable to hold the speed
-    speed = (float)pulses / (SCHEDULE_TIME / 10) * (30.0 / 67.0); // Datasheet shows 67 pulsen per 30 m/s, so 1 pulse is 30 / 67
+    speed = (float)pulses / (WINDSPEED_PERIOD / 10) * (30.0 / 67.0); // Datasheet shows 67 pulsen per 30 m/s, so 1 pulse is 30 / 67
     return speed;                                                 // Return speed value
 }

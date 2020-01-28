@@ -2,7 +2,7 @@
 
 /* Send value to main controller */
 
-void sendValue(int value, QueueHandle_t queue)
+void sendValue(double value, QueueHandle_t queue)
 {
     Data data;
     data.sender = pcTaskGetTaskName(NULL);

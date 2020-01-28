@@ -15,7 +15,6 @@
 #define PERFECT_POSITION_BOTTOM 140
 #define GEAR_REATIO 10000 // x rotations of stepper == one rotation of turbine
 
-#define SCHEDULE_TIME 10 /* Time between running of task (10 = 1 second )*/
 
 void pitchController(void *parameter)
 {
@@ -23,7 +22,7 @@ void pitchController(void *parameter)
     int position = 0; //
 
     TickType_t xLastWakeTime = xTaskGetTickCount();                   // Get tickCount, used to calculate time between running of task
-    const TickType_t xFrequency = portTICK_PERIOD_MS * SCHEDULE_TIME; // Time when the function needs to run.
+    const TickType_t xFrequency = portTICK_PERIOD_MS * MOVEPITCH_PERIOD; // Time when the function needs to run.
 
     while (1)
     { // Task main loop
@@ -48,6 +47,7 @@ void pitchController(void *parameter)
                     break;
                 }
                 gpio_set_level(YAW_STEP_PIN, 1); // Set step high and then low to take a step
+                vTaskDelay(1);
                 gpio_set_level(YAW_STEP_PIN, 0);
                 vTaskDelay(1); // Burn some calories, otherwise it won't rotate
             }
@@ -71,12 +71,8 @@ bool checkPitchInbox(int *action)
         Data message;
         /* Check if a message is in the queue, to prevent starvation */
         xQueueReceive(pitchControllerQueue, &message, portMAX_DELAY);
-        printf("%s Recieved from: %s, Value is: %d\n", pcTaskGetTaskName(NULL), message.sender, message.value);
-        //printf("Recieved from: %s, Value is: %d\n", message.sender, message.value);
-        //if (message.value != STOP)
-        //{                             // If the message is not the stop message, change direction.
-        //    direction(message.value); // Adjust direction.
-        //}
+        printf("%s Recieved from: %s, Value is: %.2f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
+
         *action = message.value; // Set the action, this is in case the motor needs to stop.
         return true;
     }
