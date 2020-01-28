@@ -84,7 +84,7 @@ bool checkPitchInbox(int *action)
         Data message;
         /* Check if a message is in the queue, to prevent starvation */
         xQueueReceive(pitchControllerQueue, &message, portMAX_DELAY);
-        printf("%s Recieved from: %s, Value is: %.2f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
+        printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
 
         *action = message.value; // Set the action, this is in case the motor needs to stop.
         return true;

@@ -21,7 +21,7 @@ void speedSensor(void *parameter)
         vTaskDelayUntil(&xLastWakeTime, xFrequency);   // To make the task periodic a delayUntil is needed.
         pcnt_get_counter_value(PCNT_UNIT, &pulses);    // Get number of pulses from the pulse counter
         double mpersecond = convertSpeedValue(pulses); // Convert pulses to m/s
-        //printf("Runnig! %d %d - PULSES: %d - m/s %.2f\n", xLastWakeTime, xFrequency, pulses, mpersecond);
+        //printf("Runnig! %d %d - PULSES: %d - m/s %.1f\n", xLastWakeTime, xFrequency, pulses, mpersecond);
         mpersecond = round(mpersecond);
 
         if (mpersecond != lastSpeed)
