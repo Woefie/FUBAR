@@ -11,7 +11,8 @@ set(COMPONENT_SRCS
     "Sensors/pitchController.c" 
     "Sensors/sensors.c" 
     "Peripherals/uart.c"
-    "Peripherals/adc.c")
+    "Peripherals/adc.c"
+    "Sensors/PID.c")
 set(COMPONENT_ADD_INCLUDEDIRS "")
 
 register_component()
