@@ -17,12 +17,11 @@
 #define MAX_PITCH 45
 #define MIN_PITCH 0
 
-
 void pitchController(void *parameter)
 {
     setup();
 
-    TickType_t xLastWakeTime = xTaskGetTickCount();                   // Get tickCount, used to calculate time between running of task
+    TickType_t xLastWakeTime = xTaskGetTickCount();                      // Get tickCount, used to calculate time between running of task
     const TickType_t xFrequency = portTICK_PERIOD_MS * MOVEPITCH_PERIOD; // Time when the function needs to run.
 
     // Structure to strore PID data and pointer to PID structure
@@ -47,30 +46,21 @@ void pitchController(void *parameter)
     { // Task main loop
         clearScreen();
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
-        if (checkPitchInbox(&position))
-        { // Check for a message
+        if (pid_need_compute(pid))
+        {
 
-            if (position > PERFECT_POSITION)
-            {
-                directionPitch(RIGHT);
-            }
-            else if (position < PERFECT_POSITION)
-            {
-                directionPitch(LEFT);
-            }
-            int steps = abs((PERFECT_POSITION - position) * GEAR_REATIO / STEP_DEGREE);
-            printf("Doing %d steps\n", steps);
-            for (int i = 0; i < steps; i++)
-            {
-                if (uxQueueMessagesWaiting(pitchControllerQueue))
-                {
-                    break;
-                }
-                gpio_set_level(YAW_STEP_PIN, 1); // Set step high and then low to take a step
-                vTaskDelay(1);
-                gpio_set_level(YAW_STEP_PIN, 0);
-                vTaskDelay(1); // Burn some calories, otherwise it won't rotate
-            }
+            int rotorSpeed = getRotorSpeedValue();
+            // Read process feedback
+            input = convertPotSpeedValue(rotorSpeed); //GET ROTOR SPEED
+            // Set the current angle for the rotor
+            currentAngle = output;
+
+            // Compute new PID output value;
+            pid_compute(pid);
+            //Change actuator value
+            setAnglePitch(output, currentAngle);
+            currentAngle = output;
+            printf("Current angle: %d\n", currentAngle);
         }
     }
     vTaskDelete(NULL); // Delete task when finished (just in case)
