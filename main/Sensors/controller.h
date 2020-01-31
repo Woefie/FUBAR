@@ -18,13 +18,13 @@
 #define YAW_GEAR_RATIO 16   // x rotations of stepper == one rotation of turbine
 
 /* Settings for measurement of wind direction */
-#define ADC_TO_DEGREE 1.46          // What is one degree, sensor can only measure from 0 to 350 degree
+#define ADC_TO_DEGREE 1.46           // What is one degree, sensor can only measure from 0 to 350 degree
 #define WINDDIRECTION_MEASUREMENTS 5 // Number of measurements per average
 
 /* Settings and calibration for PID controller         */
-#define KP 1.5
-#define KI 0.5
-#define KD 0.5
+#define KP 3
+#define KI 10
+#define KD 0.005
 
 #define MAX_SPEED 50
 #define MAX_PITCH 45

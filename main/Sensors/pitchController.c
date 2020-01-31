@@ -51,7 +51,7 @@ bool checkPitchInbox(int *action)
         Data message;
         /* Check if a message is in the queue, to prevent starvation */
         xQueueReceive(pitchControllerQueue, &message, portMAX_DELAY);
-        printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
+        // printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
 
         *action = message.value; // Set the action, this is in case the motor needs to stop.
         return true;
@@ -66,43 +66,48 @@ void setPitchAngle(int newAngle, int currentAngle)
     // 3. Bereken hoeveel stappen nodig zijn voor nieuwe angle
     // 4. return aantal stappen
     int angleDif, steps;
+    angleDif = setDirectionPitch(newAngle, currentAngle);
 
-    if (newAngle > currentAngle)
-    {
-        setDirectionPitch(RIGHT);
-        angleDif = newAngle - currentAngle;
-    }
-    else if (newAngle < currentAngle)
-    {
-        setDirectionPitch(LEFT);
-        angleDif = currentAngle - newAngle;
-    }
-    else
-    {
-        setDirectionPitch(STOP);
-        angleDif = 0;
-    }
-    steps = calculatePitchSteps(angleDif);
+    steps = abs(angleDif * PITCH_GEAR_RATIO / PITCH_STEP_DEGREE);
     for (int i = 0; i < steps; i++)
     {
+
         if (uxQueueMessagesWaiting(pitchControllerQueue))
         {
             break;
         }
         gpio_set_level(PITCH_STEP_PIN, 1); // Set step high and then low to take a step
+        vTaskDelay(1);
         gpio_set_level(PITCH_STEP_PIN, 0);
-        vTaskDelay(1); // Burn some calories, otherwise it won't rotate
+        vTaskDelay(1);
+        // Burn some calories, otherwise it won't rotate
     }
 }
 
-int calculatePitchSteps(int angleDif)
+void setDirectionPitch(int newAngle, int currentAngle)
 {
-    int steps;
-    return steps = abs(angleDif * PITCH_GEAR_RATIO / PITCH_STEP_DEGREE);
-}
+    int angleDif;
 
-void setDirectionPitch(int direction)
-{
+    if (newAngle > currentAngle)
+    {
 
-    gpio_set_level(PITCH_DIR_PIN, direction); // Set gpio 26 high or low. Left is low right is high.
+        gpio_set_level(PITCH_DIR_PIN, RIGHT);
+        angleDif = newAngle - currentAngle;
+    }
+    else if (newAngle < currentAngle)
+    {
+
+        gpio_set_level(PITCH_DIR_PIN, LEFT);
+        angleDif = currentAngle - newAngle;
+    }
+    else
+    {
+
+        gpio_set_level(PITCH_DIR_PIN, STOP);
+        angleDif = 0;
+    }
+
+    return angleDif;
+
+    // Set gpio 26 high or low. Left is low right is high.
 }

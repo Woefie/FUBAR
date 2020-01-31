@@ -15,10 +15,9 @@ void controller(void *parameter)
     pidC_t pid;
 
     // Control loop input,output and setpoint variables
-    float input = 0, output = 0;
+    float input, output;
     float setpoint = MAX_SPEED;
 
-   
     // Prepare PID controller for operation
     pid = pid_create(&ctrldata, &input, &output, &setpoint, KP, KI, KD);
     // Set controler output limits from 0 to 45
@@ -32,7 +31,7 @@ void controller(void *parameter)
         if (uxQueueMessagesWaiting(dirSensorQueue))
         { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(dirSensorQueue, &message, portMAX_DELAY);
-            printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
+            // printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
             controlData.windDirection = (int)message.value;
             if (controlData.windSpeed > 0)
             {
@@ -43,14 +42,14 @@ void controller(void *parameter)
         if (uxQueueMessagesWaiting(speedSensorQueue))
         { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(speedSensorQueue, &message, portMAX_DELAY);
-            printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
+            //printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
             controlData.windSpeed = message.value;
         }
 
         if (uxQueueMessagesWaiting(rotorSpeedQueue))
         { /* Check if a message is in the queue, to prevent starvation */
             xQueueReceive(rotorSpeedQueue, &message, portMAX_DELAY);
-            printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
+            //printf("%s Recieved from: %s, Value is: %.1f\n", pcTaskGetTaskName(NULL), message.sender, message.value);
             controlData.rotorSpeed = message.value;
             input = message.value;
 
@@ -78,6 +77,7 @@ void printData()
 {
 
     printf("Wind direction: %d, Wind speed: %.1f, Rotor speed: %d, Pitch angle: %d\n", controlData.windDirection, controlData.windSpeed, controlData.rotorSpeed, controlData.pitchAngle);
+    //printf("Wind direction: %d, Wind speed: %.1f\n", controlData.windDirection, controlData.windSpeed);
 }
 
 void moveYaw(int value)
@@ -101,6 +101,7 @@ void movePitch(pidC_t pid)
 {
 
     pid_compute(pid);
+    printf("%f\n", *pid->output);
     controlData.pitchAngle = *pid->output;
     sendValue(*pid->output, pitchControllerQueue);
 }
