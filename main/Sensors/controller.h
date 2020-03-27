@@ -39,7 +39,7 @@ void controller(void *parameter);
 int calculateYawSteps(int position);
 void moveYaw(int value);
 void movePitch(pidC_t pid);
-void setDirectionPitch(int direction);
+
 void clearScreen();
 void printData();
 

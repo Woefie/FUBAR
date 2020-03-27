@@ -84,7 +84,7 @@ void setPitchAngle(int newAngle, int currentAngle)
     }
 }
 
-void setDirectionPitch(int newAngle, int currentAngle)
+int setDirectionPitch(int newAngle, int currentAngle)
 {
     int angleDif;
 

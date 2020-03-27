@@ -11,5 +11,5 @@ static void setup(void);
 bool checkPitchInbox(int *action);
 int calculatePitchSteps(int angleDif);
 void setPitchAngle(int newAngle, int currentAngle);
-
+int setDirectionPitch(int newAngle, int currentAngle);
 #endif

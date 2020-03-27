@@ -15,5 +15,6 @@
         "speedsensor.h": "c",
         "pid.h": "c",
         "*.tcc": "c"
-    }
+    },
+    "cmake.configureOnOpen": false
 }
